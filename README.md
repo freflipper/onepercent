@@ -2,7 +2,16 @@
 
 Questo è il nuovo progetto web ricavato da `APP-COMPLETA.tar.gz`. Mantiene l'interfaccia e le funzioni Emergent e usa Google/Supabase per autenticazione, dati e immagini private. Il precedente backend Emergent non serve per eseguire questa versione.
 
-## Aprire sul PC
+## Aprire su PC e iPhone
+
+Indirizzo dell'app: **https://freflipper.github.io/onepercent/**. Lo stato della pubblicazione è disponibile in [GitHub Actions](https://github.com/freflipper/onepercent/actions).
+
+- **PC:** aprire il link nel browser e salvarlo nei preferiti. La versione online non richiede Node.js, file scaricati o una console aperta.
+- **iPhone:** aprire il link in Safari, scegliere Condividi → Aggiungi alla schermata Home, attivare “Apri come app web” se presente e toccare Aggiungi. In alcuni layout Condividi è nel pulsante Altro. [Istruzioni Apple](https://support.apple.com/it-it/guide/iphone/iphea86e5236/ios).
+
+Accedere con lo stesso account Google sui due dispositivi per usare i record del proprio Supabase. Servono Internet e un account già autorizzato; le nuove registrazioni rimangono chiuse. Leggere i limiti sulle nuove note nella sezione seguente.
+
+## Avvio locale facoltativo sul PC
 
 Fare doppio clic su **Apri-1percent.cmd** in questa cartella. Apre **http://localhost:8081/** nel browser, servendo la build già preparata in `frontend/dist/`. Lasciare la console aperta; Ctrl+C la arresta. Non crea servizi o avvii automatici e non occupa le porte delle precedenti app.
 
@@ -39,11 +48,11 @@ La sessione della nuova versione ha una chiave dedicata. Logout rimuove sessione
 
 ## GitHub Pages e Home iPhone
 
-La pubblicazione è stata richiesta dall'utente. Sono pronti manifest, icone, callback statico e fallback delle rotte; **il sito non è ancora pubblicato**. Restano da completare l'accesso GitHub e la scelta del repository/visibilità. La destinazione determina `EXPO_PUBLIC_BASE_PATH` e il callback HTTPS da autorizzare in Supabase. Il callback Google verso Supabase rimane quello esistente.
+Il repository pubblico è [freflipper/onepercent](https://github.com/freflipper/onepercent), con GitHub Pages configurato tramite Actions. La build usa `EXPO_PUBLIC_BASE_PATH=/onepercent`; manifest, icone, callback statico e fallback delle rotte seguono quel percorso. Il callback `https://freflipper.github.io/onepercent/auth/callback` è autorizzato in Supabase insieme ai tre indirizzi locali già utilizzati. Il callback Google verso Supabase rimane quello esistente.
 
 Il workflow `.github/workflows/pages-deploy.yml` verifica e pubblica il frontend da push sul branch predefinito o avvio manuale. `.github/workflows/pages-artifact.yml` rimane disponibile per produrre soltanto l'artefatto di revisione. Il repository deve contenere i sorgenti attivi di questa cartella `emergent` nella propria radice. Configurazione Pages, variabili pubbliche e dettagli in [frontend/docs/PWA-PAGES.md](frontend/docs/PWA-PAGES.md).
 
-Dopo la pubblicazione: aprire l'indirizzo HTTPS in Safari su iPhone → Condividi → Aggiungi alla schermata Home. Usando lo stesso account Google, PC e iPhone leggono i record nello stesso Supabase. L'installazione non è ancora stata provata su un iPhone fisico.
+L'installazione sulla Home non abilita funzioni offline o notifiche a pagina chiusa. Non è ancora stata provata su un iPhone fisico.
 
 ## Struttura
 
@@ -53,6 +62,6 @@ Dopo la pubblicazione: aprire l'indirizzo HTTPS in Safari su iPhone → Condivid
 - `supabase/migrations`: compatibilità additiva da applicare soltanto dopo revisione e autorizzazione.
 - `backend`, `tests`, `memory`, `test_result.md` nella radice: riferimenti storici importati da Emergent. Non vengono eseguiti o pubblicati nel sito; i loro esiti non descrivono questa conversione. I test Python originari cancellano record QA e non vanno avviati sul progetto personale.
 
-La copia filtrata originale e l'archivio ricevuto sono conservati separatamente. Nessun commit, pubblicazione o acquisto è stato eseguito durante la conversione.
+La copia filtrata originale e l'archivio ricevuto sono conservati separatamente. La pubblicazione del codice e del sito è stata autorizzata dall'utente; non sono stati attivati servizi a pagamento.
 
 I pacchetti in `outputs/` del workspace contengono rispettivamente la build per PC con launcher e i sorgenti attivi senza `.env` o dipendenze installate. Il backend Python storico resta nel workspace e nell'archivio originale, fuori dal pacchetto dei nuovi sorgenti.
