@@ -1,0 +1,54 @@
+name: Build Pages artifact (no publishing)
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_path:
+        description: 'Pages project path, for example /onepercent; empty for a root site'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    env:
+      EXPO_NO_TELEMETRY: '1'
+      EXPO_PUBLIC_BASE_PATH: ${{ inputs.base_path }}
+      EXPO_PUBLIC_SUPABASE_URL: ${{ vars.EXPO_PUBLIC_SUPABASE_URL }}
+      EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '10.32.1'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - name: Validate required public configuration
+        run: |
+          node --input-type=module -e "import {normaliseBasePath} from './scripts/package-pages.mjs'; import {validatePublicConfiguration} from './scripts/pages-ci.mjs'; normaliseBasePath(process.env.EXPO_PUBLIC_BASE_PATH); validatePublicConfiguration({url:process.env.EXPO_PUBLIC_SUPABASE_URL,key:process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY});"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build:web
+      - run: node scripts/pages-ci.mjs verify
+      - name: Upload static artifact for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: onepercent-pages
+          path: frontend/dist
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+      # There is deliberately no deployment job or pages:write permission.
+      # Publishing remains a separate, explicitly authorised action.
